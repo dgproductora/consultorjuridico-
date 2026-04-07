@@ -1,0 +1,101 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Profile information for a user (lawyer, student, etc.)",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "lawyer", "student", "user"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "twoFactorEnabled": { "type": "boolean", "description": "Whether 2FA is enabled for this user" },
+        "twoFactorSecret": { "type": "string", "description": "The TOTP secret for 2FA" },
+        "subscriptionStatus": { "type": "string", "enum": ["free", "pro", "premium"], "description": "The current subscription status of the user." },
+        "subscriptionId": { "type": "string", "description": "The Stripe subscription ID." },
+        "customerId": { "type": "string", "description": "The Stripe customer ID." },
+        "academiaScore": { "type": "number", "description": "Total score in the Academia Jurídica" },
+        "academiaStreak": { "type": "number", "description": "Current streak in the Academia Jurídica" }
+      },
+      "required": ["uid", "email", "role", "createdAt"]
+    },
+    "LegalQuery": {
+      "title": "LegalQuery",
+      "description": "A legal query or case summary submitted by a user",
+      "type": "object",
+      "properties": {
+        "authorUid": { "type": "string" },
+        "content": { "type": "string", "description": "The main query text" },
+        "summary": { "type": "string", "description": "Optional case summary" },
+        "status": { "type": "string", "enum": ["pending", "answered", "closed", "error"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["authorUid", "content", "status", "createdAt"]
+    },
+    "Book": {
+      "title": "Book",
+      "description": "A book listed for donation or sale by a student",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "author": { "type": "string" },
+        "subject": { "type": "string" },
+        "condition": { "type": "string", "enum": ["Nuevo", "Como Nuevo", "Usado", "Muy Usado"] },
+        "type": { "type": "string", "enum": ["Donación", "Venta"] },
+        "price": { "type": "number" },
+        "sellerUid": { "type": "string" },
+        "sellerName": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "subject", "condition", "type", "price", "sellerUid", "sellerName", "createdAt"]
+    },
+    "AppSetting": {
+      "title": "AppSetting",
+      "description": "Global application settings",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "The value of the setting (e.g., sponsor name)" }
+      },
+      "required": ["name"]
+    },
+    "LegalDocument": {
+      "title": "LegalDocument",
+      "description": "A legal document or template available for download",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "fileName": { "type": "string" },
+        "size": { "type": "number" },
+        "category": { "type": "string" },
+        "type": { "type": "string" },
+        "path": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "downloadCount": { "type": "number" }
+      },
+      "required": ["name", "fileName", "size", "category", "type", "path", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Stores user profiles"
+    },
+    "/queries/{queryId}": {
+      "schema": "LegalQuery",
+      "description": "Stores legal queries submitted by users"
+    },
+    "/books/{bookId}": {
+      "schema": "Book",
+      "description": "Stores books listed for donation or sale"
+    },
+    "/settings/{settingId}": {
+      "schema": "AppSetting",
+      "description": "Stores global application settings"
+    },
+    "/documents/{docId}": {
+      "schema": "LegalDocument",
+      "description": "Stores metadata for legal documents"
+    }
+  }
+}
